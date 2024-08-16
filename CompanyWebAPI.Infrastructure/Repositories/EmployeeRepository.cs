@@ -59,5 +59,36 @@ namespace CompanyWebAPI.Infrastructure.Repositories
                .Take(pageSize).ToListAsync();
             return employees;
         }
+        public async Task<List<object>> GetNonManagerNonSupervisorEmployeesAsync()
+        {
+            var nonManagerNonSupervisorEmployees = await _db.Employees
+                .Where(e => e.Position != "Manager" && e.Position != "Supervisor" && !_db.Departments.Any(d => d.MgrEmpNo == e.EmpNo))
+                .Select(e => new
+                {
+                    e.Fname,
+                    e.Lname,
+                    e.Position,
+                    e.Sex,
+                    e.DeptNo
+                })
+                .ToListAsync();
+            return nonManagerNonSupervisorEmployees.Cast<object>().ToList();
+        }
+        public async Task<IEnumerable<object>> GetEmployeeAgeWithDepartmentAsync()
+        {
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+            var result = await _db.Employees
+                .Where(e => e.DeptNo.HasValue) // Ensure the employee is associated with a department
+                .Select(e => new
+                {
+                    EmployeeName = e.Fname + " " + e.Lname,
+                    DepartmentName = e.DeptNoNavigation.DeptName,
+                    Age = today.Year - e.Dob.Year - ((today < e.Dob.AddYears(today.Year - e.Dob.Year)) ? 1 : 0)
+                })
+                .ToListAsync();
+            return result;
+        }
+
     }
 }

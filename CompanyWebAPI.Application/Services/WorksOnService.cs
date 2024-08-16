@@ -40,7 +40,13 @@ namespace CompanySystemWebAPI.Services
             {
                 throw new ArgumentException("Maximum Projects For Employees are " + intValue);
             }
-
+            var valueWorkingHours = section["MaximumWorkingHours"];
+            int intValueWorkingHours = int.Parse(valueWorkingHours);
+            decimal totalHours = await _worksOnRepository.GetTotalHoursProject(inputWorksOn);
+            if (totalHours + inputWorksOn.Hoursworked > intValueWorkingHours)
+            {
+                throw new InvalidOperationException($"Total hours for this project cannot exceed {intValueWorkingHours} hours.");
+            }
             var newWorksOn = new WorksOn
             {
                 EmpNo = inputWorksOn.EmpNo,
@@ -79,6 +85,22 @@ namespace CompanySystemWebAPI.Services
             {
                 return null;
             }
+            var section = _configuration.GetSection("CompanyConstraint");
+            var valueProjects = section["MaximumProjects"];
+            int maxProjects = int.Parse(valueProjects);
+            var valueWorkingHours = section["MaximumWorkingHours"];
+            int maxWorkingHours = int.Parse(valueWorkingHours);
+            var validateTotalProjectEmployee = await _worksOnRepository.GetAllAsync(w => w.EmpNo == worksOn.EmpNo);
+            int totalProjectCount = validateTotalProjectEmployee.Count();
+            if (totalProjectCount > maxProjects)
+            {
+                throw new ArgumentException("Maximum Projects For Employees are " + maxProjects);
+            }
+            decimal totalHours = await _worksOnRepository.GetTotalHoursProject(worksOn);
+            if (totalHours + worksOn.Hoursworked > maxWorkingHours)
+            {
+                throw new ArgumentException("Total working hours for this project cannot exceed " + maxWorkingHours + " hours.");
+            }
             _worksOnRepository.Update(foundWorksOn, worksOn);
             await _worksOnRepository.SaveAsync();
             return foundWorksOn;
@@ -101,6 +123,16 @@ namespace CompanySystemWebAPI.Services
             if (pageNumber < 1) pageNumber = 1;
             var totalHoursWorkedPerEmployee = await _worksOnRepository.GetTotalHoursWorkedEmployee(pageNumber, pageSize);
             return totalHoursWorkedPerEmployee;
+        }
+        public async Task<List<object>> GetTotalHoursWorkedByFemaleEmployeesReport()
+        {
+            var totalHoursWorkedPerFemaleEmployee = await _worksOnRepository.GetTotalHoursWorkedByFemaleEmployeesReport();
+            return totalHoursWorkedPerFemaleEmployee;
+        }
+        public async Task<IEnumerable<object>> GetMaxAndMinHoursWorkedByEmployeeAsync()
+        {
+            var maxMinTotalHoursEmployee = await _worksOnRepository.GetMaxAndMinHoursWorkedByEmployeeAsync();
+            return maxMinTotalHoursEmployee;
         }
     }
 }

@@ -76,5 +76,17 @@ namespace CompanySystemWebAPI.Controllers
             var employeesTotalWorked = await _worksOnService.GetTotalHoursWorkedEmployee(pageNumber);
             return Ok(employeesTotalWorked);
         }
+        [HttpGet("Female-Total-Hours-Worked")]
+        public async Task<IActionResult> GetTotalHoursWorkeFemaleEmployee()
+        {
+            var employeesFemaleTotalWorked = await _worksOnService.GetTotalHoursWorkedByFemaleEmployeesReport();
+            return Ok(employeesFemaleTotalWorked);
+        }
+        [HttpGet("Min-Max-Hours-Worked")]
+        public async Task<IActionResult> GetMaxAndMinHoursWorkedByEmployeeAsync()
+        {
+            var minMaxHoursWorked = await _worksOnService.GetMaxAndMinHoursWorkedByEmployeeAsync();
+            return Ok(minMaxHoursWorked);
+        }
     }
 }

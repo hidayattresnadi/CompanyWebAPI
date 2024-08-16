@@ -56,9 +56,21 @@ namespace CompanySystemWebAPI.Controllers
             return Ok(employees);
         }
         [HttpGet("ITDepartment")]
-        public async Task<IEnumerable<Employee>> GetITEmployees([FromQuery] int pageNumber){
+        public async Task<IActionResult> GetITEmployees([FromQuery] int pageNumber){
             var ITEmployees = await _employeeService.GetITEmployees(pageNumber);
-            return ITEmployees;
+            return Ok(ITEmployees);
+        }
+        [HttpGet("Non-Manager-Non-Supervisor")]
+        public async Task<IActionResult> GetNonManagerNonSupervisorEmployeesAsync()
+        {
+            var nonManagerEmployees = await _employeeService.GetNonManagerNonSupervisorEmployeesAsync();
+            return Ok(nonManagerEmployees);
+        }
+        [HttpGet("Employee-Age")]
+        public async Task<IActionResult> GetEmployeeAgeWithDepartmentAsync()
+        {
+            var nonManagerEmployees = await _employeeService.GetEmployeeAgeWithDepartmentAsync();
+            return Ok(nonManagerEmployees);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmployeeById(int id)

@@ -15,5 +15,8 @@ namespace CompanyWebAPI.Domain.Repositories
         public Task<int> GetCountingOfFemaleManagers();
         public Task<IEnumerable<object>> GetDepartmentsWithMoreThanTenEmployees(int pageNumber, int pageSize);
         public Task<IEnumerable<Employee>> GetManagersUnderFourty(int pageNumber, int pageSize);
+        public Task<IEnumerable<object>> GetManagersDueToRetireThisYear(int intValue);
+        public Task<IEnumerable<object>> GetFemaleManagersWithProjectsAsync();
+        public Task<IEnumerable<Project>> GetProjectsManagedByPlanningDepartmentAsync();
     }
 }

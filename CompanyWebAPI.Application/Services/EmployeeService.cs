@@ -2,6 +2,7 @@
 using CompanyAPI.Interfaces;
 using CompanyWebAPI.Domain.Repositories;
 using CompanyWebAPI.Infrastructure.Models;
+using CompanyWebAPI.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -31,14 +32,17 @@ namespace CompanyAPI.Services
                 {
                     throw new ArgumentException("Invalid Department ID");
                 }
-                var section = _configuration.GetSection("CompanyConstraint");
-                var value = section["MaximumITEmployees"];
-                int intValue = int.Parse(value);
-                var itEmployees = await _employeeRepository.GetAllAsync(e => e.DeptNo == 1);
-                int itEmplyeesCount = itEmployees.Count();
-                if (itEmplyeesCount == intValue)
+                if (inputEmployee.DeptNo ==1)
                 {
-                    throw new ArgumentException("Maximum IT Employees are " + intValue);
+                    var section = _configuration.GetSection("CompanyConstraint");
+                    var value = section["MaximumITEmployees"];
+                    int intValue = int.Parse(value);
+                    var itEmployees = await _employeeRepository.GetAllAsync(e => e.DeptNo == 1);
+                    int itEmplyeesCount = itEmployees.Count();
+                    if (itEmplyeesCount == intValue)
+                    {
+                        throw new ArgumentException("Maximum IT Employees are " + intValue);
+                    }
                 }
             }
             bool isDupplicate = await ValidateDupplicateEmployee(inputEmployee.Fname, inputEmployee.Lname);
@@ -175,6 +179,16 @@ namespace CompanyAPI.Services
             if (pageNumber < 1) pageNumber = 1;
             var itEmployees = await _employeeRepository.GetITEmployees(pageNumber, pageSize);
             return itEmployees;
+        }
+        public async Task<List<object>> GetNonManagerNonSupervisorEmployeesAsync()
+        {
+            var nonManagerEmployees = await _employeeRepository.GetNonManagerNonSupervisorEmployeesAsync();
+            return nonManagerEmployees;
+        }
+        public async Task<IEnumerable<object>> GetEmployeeAgeWithDepartmentAsync()
+        {
+            var maxMinTotalHoursEmployee = await _employeeRepository.GetEmployeeAgeWithDepartmentAsync();
+            return maxMinTotalHoursEmployee;
         }
     }
 }

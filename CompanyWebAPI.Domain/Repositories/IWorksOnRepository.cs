@@ -12,5 +12,8 @@ namespace CompanyWebAPI.Domain.Repositories
     {
         public WorksOn Update(WorksOn foundWorksOn, DTOWorksOn worksOn);
         public Task<object> GetTotalHoursWorkedEmployee(int pageNumber, int pageSize);
+        public Task<decimal> GetTotalHoursProject(DTOWorksOn newWorkOn);
+        public Task<List<object>> GetTotalHoursWorkedByFemaleEmployeesReport();
+        public Task<IEnumerable<object>> GetMaxAndMinHoursWorkedByEmployeeAsync();
     }
 }

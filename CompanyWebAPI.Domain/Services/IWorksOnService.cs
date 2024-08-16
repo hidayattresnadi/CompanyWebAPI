@@ -11,5 +11,7 @@ namespace CompanyAPI.Interfaces
         Task<WorksOn> UpdateWorksOn(DTOWorksOn workson, int id);
         Task<bool> DeleteWorksOn(int id);
         Task<object> GetTotalHoursWorkedEmployee(int pageNumber);
+        Task<List<object>> GetTotalHoursWorkedByFemaleEmployeesReport();
+        Task<IEnumerable<object>> GetMaxAndMinHoursWorkedByEmployeeAsync();
     }
 }

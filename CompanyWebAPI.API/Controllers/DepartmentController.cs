@@ -88,8 +88,27 @@ namespace CompanySystemWebAPI.Controllers
         [HttpGet("Managers-Under-Fourty")]
         public async Task<IActionResult> GetManagersUnderFourty([FromQuery] int pageNumber)
         {
-            var departments = await _departmentService.GetManagersUnderFourty(pageNumber);
-            return Ok(departments);
+            var managers = await _departmentService.GetManagersUnderFourty(pageNumber);
+            return Ok(managers);
+        }
+
+        [HttpGet("Managers-Retire-This-Year")]
+        public async Task<IActionResult> GetManagersRetireThisYear()
+        {
+            var managers = await _departmentService.GetManagersDueToRetireThisYear();
+            return Ok(managers);
+        }
+        [HttpGet("Female-Manager-Project")]
+        public async Task<IActionResult> GetFemaleManagersWithProjectsAsync()
+        {
+            var femaleManagers = await _departmentService.GetFemaleManagersWithProjectsAsync();
+            return Ok(femaleManagers);
+        }
+        [HttpGet("Project-Planning-Department")]
+        public async Task<IActionResult> GetProjectsManagedByPlanningDepartmentAsync()
+        {
+            var projectPlanningDepartment = await _departmentService.GetProjectsManagedByPlanningDepartmentAsync();
+            return Ok(projectPlanningDepartment);
         }
     }
 }

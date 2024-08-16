@@ -14,5 +14,7 @@ namespace CompanyWebAPI.Domain.Repositories
         public Task<List<Employee>> GetNonManagersAsync(int pageNumber, int pageSize);
         public Task<IEnumerable<Employee>> GetITEmployees(int pageNumber, int pageSize);
         public Task<IEnumerable<Employee>> GetBRICSEmployees(int pageNumber, int pageSize);
+        public Task<List<object>> GetNonManagerNonSupervisorEmployeesAsync();
+        public Task<IEnumerable<object>> GetEmployeeAgeWithDepartmentAsync();
     }
 }

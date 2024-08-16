@@ -15,5 +15,7 @@ namespace CompanyAPI.Interfaces
         Task<IEnumerable<Employee>> GetNonManagerEmployees(int pageNumber);
         Task<IEnumerable<Employee>> GetBRICSEmployees(int pageNumber);
         Task<IEnumerable<Employee>> GetITEmployees(int pageNumber);
+        Task<List<object>> GetNonManagerNonSupervisorEmployeesAsync();
+        Task<IEnumerable<object>> GetEmployeeAgeWithDepartmentAsync();
     }
 }

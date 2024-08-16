@@ -3,19 +3,20 @@ using CompanyAPI.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using CompanyAPI.DTO;
 using CompanyWebAPI.Domain.Repositories;
+using Microsoft.Extensions.Configuration;
 
 namespace CompanyAPI.Services
 {
     public class DepartmentService : IDepartmentsService
     {
-        private readonly CompanySystemContext _context;
         private readonly IDepartmentRepository _departmentRepository;
         private readonly IEmployeeRepository _employeeRepository;
-        public DepartmentService(CompanySystemContext context, IDepartmentRepository departmentRepository, IEmployeeRepository employeeRepository)
+        private readonly IConfiguration _configuration;
+        public DepartmentService(IDepartmentRepository departmentRepository, IEmployeeRepository employeeRepository, IConfiguration configuration)
         {
-            _context = context;
             _departmentRepository = departmentRepository;
             _employeeRepository = employeeRepository;
+            _configuration = configuration;
         }
 
         public async Task<bool> ValidateDupplicateDepartmentName(string departmentName)
@@ -118,6 +119,24 @@ namespace CompanyAPI.Services
             if (pageNumber < 1) pageNumber = 1;
             var departmentsWithMoreThanTenEmployees = await _departmentRepository.GetDepartmentsWithMoreThanTenEmployees(pageNumber, pageSize);
             return departmentsWithMoreThanTenEmployees;
+        }
+        public async Task<IEnumerable<object>> GetManagersDueToRetireThisYear()
+        {
+            var section = _configuration.GetSection("CompanyConstraint");
+            var value = section["RetireAge"];
+            int intValue = int.Parse(value);
+            var managersDueToRetireThisYear = await _departmentRepository.GetManagersDueToRetireThisYear(intValue);
+            return managersDueToRetireThisYear;
+        }
+        public async Task<IEnumerable<object>> GetFemaleManagersWithProjectsAsync()
+        {
+            var femaleManagersWithProject = await _departmentRepository.GetFemaleManagersWithProjectsAsync();
+            return femaleManagersWithProject;
+        }
+        public async Task<IEnumerable<Project>> GetProjectsManagedByPlanningDepartmentAsync()
+        {
+            var projectsManagedByPlanningDepartmentA = await _departmentRepository.GetProjectsManagedByPlanningDepartmentAsync();
+            return projectsManagedByPlanningDepartmentA;
         }
     }
 }

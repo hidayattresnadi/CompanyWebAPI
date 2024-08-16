@@ -13,6 +13,9 @@ namespace CompanyAPI.Interfaces
         Task<IEnumerable<Employee>> GetFemaleManagers(int pageNumber);
         Task<int> GetCountingOfFemaleManagers();
         Task<IEnumerable<object>> GetDepartmentsWithMoreThanTenEmployees(int pageNumber);
-        public Task<IEnumerable<Employee>> GetManagersUnderFourty(int pageNumber);
+        Task<IEnumerable<Employee>> GetManagersUnderFourty(int pageNumber);
+        Task<IEnumerable<object>> GetManagersDueToRetireThisYear();
+        Task<IEnumerable<object>> GetFemaleManagersWithProjectsAsync();
+        Task<IEnumerable<Project>> GetProjectsManagedByPlanningDepartmentAsync();
     }
 }

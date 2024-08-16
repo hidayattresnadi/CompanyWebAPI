@@ -75,5 +75,67 @@ namespace CompanyWebAPI.Infrastructure.Repositories
                 .ToListAsync();
             return managersUnder40;
         }
+        public async Task<IEnumerable<object>> GetManagersDueToRetireThisYear(int intValue)
+        {
+            var currentYear = DateOnly.FromDateTime(DateTime.Now).Year;
+            var retirementAge = intValue;
+
+            var managersDueToRetire = await _db.Departments
+                .Select(d => new
+                {
+                    Manager = d.MgrEmpNoNavigation,
+                    RetirementYear = d.MgrEmpNoNavigation.Dob.Year + retirementAge
+                })
+                .Where(m => m.RetirementYear == currentYear)
+                .OrderBy(m => m.Manager.Lname)
+                .Select(m => new
+                {
+                    EmpNo = m.Manager.EmpNo,
+                    Fname = m.Manager.Fname,
+                    Lname = m.Manager.Lname,
+                    Address = m.Manager.Address,
+                    Dob = m.Manager.Dob,
+                    Sex = m.Manager.Sex,
+                    Position = m.Manager.Position,
+                    DeptNo = m.Manager.DeptNo,
+                    RetirementAge = retirementAge
+                })
+                .ToListAsync();
+            return managersDueToRetire;
+        }
+        public async Task<IEnumerable<object>> GetFemaleManagersWithProjectsAsync()
+        {
+            var result = await _db.Departments
+                .Include(d => d.MgrEmpNoNavigation)
+                .Where(d => d.MgrEmpNoNavigation.Sex == "Female" && d.MgrEmpNoNavigation.Position == "Manager")
+                .Select(d => new
+                {
+                    ManagerName = d.MgrEmpNoNavigation.Fname + " " + d.MgrEmpNoNavigation.Lname,
+                    Projects = d.Projects.Select(p => new
+                    {
+                        p.ProjNo,
+                        p.ProjName
+                    })
+                })
+                .ToListAsync();
+
+            return result;
+        }
+        public async Task<IEnumerable<Project>> GetProjectsManagedByPlanningDepartmentAsync()
+        {
+            var planningDepartment = await _db.Departments
+                .FirstOrDefaultAsync(d => d.DeptName == "Planning");
+
+            if (planningDepartment == null)
+            {
+                throw new ArgumentException("The Planning department does not exist.");
+            }
+
+            var projects = await _db.Projects
+                .Where(p => p.DeptNo == planningDepartment.DeptNo)
+                .ToListAsync();
+
+            return projects;
+        }
     }
 }
