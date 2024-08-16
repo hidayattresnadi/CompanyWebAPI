@@ -73,10 +73,13 @@ namespace CompanyAPI.Services
             {
                 return null;
             }
-            bool isDupplicate = await ValidateDupplicateDepartmentName(department.DeptName);
-            if (isDupplicate)
+            if (department.DeptName != foundDepartment.DeptName) 
             {
-                throw new ArgumentException("Department Name is already exist");
+                bool isDupplicate = await ValidateDupplicateDepartmentName(department.DeptName);
+                if (isDupplicate)
+                {
+                    throw new ArgumentException("Department Name is already exist");
+                }
             }
             _departmentRepository.Update(foundDepartment, department);
             await _departmentRepository.SaveAsync();
